@@ -1,0 +1,52 @@
+---
+- hosts: test
+  remote_user: root
+
+  tasks:
+
+  - name: Parando o serviço do Firewall
+    service: name=firewalld state=stopped enabled=no
+
+  - selinux:
+      state: disabled
+
+  - name: Instalando o Apache
+    yum: state=latest name={{ item }}
+    with_items:
+    - httpd
+    - httpd-devel
+
+  - name: Instalando o Banco de Dados
+    yum: state=latest name={{ item }}
+    with_items:
+    - mariadb
+    - mariadb-server
+
+  - name: Instalando o PHP
+    yum: state=latest name={{ item }}
+    with_items:
+    - rh-php70
+    - rh-php70-php-cli
+    - rh-php70-php-pdo
+    - rh-php70-php-xml
+    - rh-php70-php-devel
+    - rh-php70-php-gd
+    - rh-php70-php-mbstring
+    - rh-php70-php-mysqlnd
+
+  - name: Inciando o Banco de Dados
+    service: name=mariadb state=started enabled=yes
+
+  - name: Instalando Wget
+    yum: state=latest name=wget
+
+  - name: Realizando download do piwik
+    get_url:
+      url: https://builds.piwik.org/piwik.zip
+      dest: /opt
+
+  - name: Descompatando arquivo
+    shell: unzip /opt/piwik.zip -d /var/www/html
+
+  - name: Habilitando o serviço do Apache
+    service: name=httpd state=started enabled=yes
