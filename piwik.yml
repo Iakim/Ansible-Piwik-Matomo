@@ -25,14 +25,16 @@
   - name: Instalando o PHP
     yum: state=latest name={{ item }}
     with_items:
-    - rh-php70
-    - rh-php70-php-cli
-    - rh-php70-php-pdo
-    - rh-php70-php-xml
-    - rh-php70-php-devel
-    - rh-php70-php-gd
-    - rh-php70-php-mbstring
-    - rh-php70-php-mysqlnd
+    - php71w
+    - php71w-cli
+    - php71w-pdo
+    - php71w-xml
+    - php71w-devel
+    - php71w-gd
+    - php71w-mbstring
+    - php71w-mysqlnd
+    - php71w-pear
+    - php71w-process
 
   - name: Inciando o Banco de Dados
     service: name=mariadb state=started enabled=yes
@@ -47,6 +49,26 @@
 
   - name: Descompatando arquivo
     shell: unzip /opt/piwik.zip -d /var/www/html
+
+  - name: Concedendo permissão ao Apache
+    shell: chown -R apache:apache /var/www/html/piwik
+
+  - name: Configuring php.ini
+    lineinfile:
+      path: /etc/php.ini
+      regexp: '^;always_populate_raw_post_data = -1'
+      line: 'always_populate_raw_post_data = -1'
+
+  - name: Adicionando GeoIP (Php)
+    get_url:
+      url: http://geolite.maxmind.com/download/geoip/database/GeoLiteCity.dat.gz
+      dest: /var/www/html/piwik/misc
+
+  - name: Descompactando arquivos .dat
+    shell: gzip -d /var/www/html/piwik/misc/GeoLiteCity.dat.gz
+
+  - name: Renomenado arquivo .dat
+    shell: mv /var/www/html/piwik/misc/GeoLiteCity.dat /var/www/html/piwik/misc/GeoIPCity.dat
 
   - name: Habilitando o serviço do Apache
     service: name=httpd state=started enabled=yes
