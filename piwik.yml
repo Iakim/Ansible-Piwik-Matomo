@@ -4,25 +4,25 @@
 
   tasks:
 
-  - name: Parando o serviço do Firewall
+  - name: Stopping the Firewall service
     service: name=firewalld state=stopped enabled=no
 
   - selinux:
       state: disabled
 
-  - name: Instalando o Apache
+  - name: Installing Apache
     yum: state=latest name={{ item }}
     with_items:
     - httpd
     - httpd-devel
 
-  - name: Instalando o Banco de Dados
+  - name: Installing the Database
     yum: state=latest name={{ item }}
     with_items:
     - mariadb
     - mariadb-server
 
-  - name: Instalando o PHP
+  - name: Installing PHP
     yum: state=latest name={{ item }}
     with_items:
     - php71w
@@ -36,21 +36,21 @@
     - php71w-pear
     - php71w-process
 
-  - name: Inciando o Banco de Dados
+  - name: Starting the Database
     service: name=mariadb state=started enabled=yes
 
-  - name: Instalando Wget
+  - name: Installing wget
     yum: state=latest name=wget
 
-  - name: Realizando download do piwik
+  - name: Downloading Piwik
     get_url:
       url: https://builds.piwik.org/piwik.zip
       dest: /opt
 
-  - name: Descompatando arquivo
+  - name: Unlinking file
     shell: unzip /opt/piwik.zip -d /var/www/html
 
-  - name: Concedendo permissão ao Apache
+  - name: Granting permission to Apache
     shell: chown -R apache:apache /var/www/html/piwik
 
   - name: Configuring php.ini
@@ -59,16 +59,16 @@
       regexp: '^;always_populate_raw_post_data = -1'
       line: 'always_populate_raw_post_data = -1'
 
-  - name: Adicionando GeoIP (Php)
+  - name: Adding GeoIP (Php)
     get_url:
       url: http://geolite.maxmind.com/download/geoip/database/GeoLiteCity.dat.gz
       dest: /var/www/html/piwik/misc
 
-  - name: Descompactando arquivos .dat
+  - name: Unzipping .dat file
     shell: gzip -d /var/www/html/piwik/misc/GeoLiteCity.dat.gz
 
-  - name: Renomenado arquivo .dat
+  - name: Rename .dat file
     shell: mv /var/www/html/piwik/misc/GeoLiteCity.dat /var/www/html/piwik/misc/GeoIPCity.dat
 
-  - name: Habilitando o serviço do Apache
+  - name: Enabling the Apache service
     service: name=httpd state=started enabled=yes
