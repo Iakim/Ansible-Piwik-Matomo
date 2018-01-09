@@ -42,7 +42,7 @@
   - name: Installing wget
     yum: state=latest name=wget
 
-  - name: Downloading Piwik
+  - name: Downloading Piwik - Motomo
     get_url:
       url: https://builds.piwik.org/piwik.zip
       dest: /opt
