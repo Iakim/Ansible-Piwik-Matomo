@@ -42,7 +42,7 @@
   - name: Installing wget
     yum: state=latest name=wget
 
-  - name: Downloading Piwik - Matomo
+  - name: Downloading Matomo
     get_url:
       url: https://builds.piwik.org/piwik.zip
       dest: /opt
