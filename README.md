@@ -1,7 +1,7 @@
 [![Latest Stable Version](https://poser.pugx.org/piwik/piwik/v/stable)](https://matomo.org/download/)
 [![PyPI version](https://img.shields.io/pypi/v/ansible.svg)](https://pypi.python.org/pypi/ansible/2.4.2.0)
 
-# Ansible for install a Piwik - Matomo
+# Ansible for install a Matomo
 
 ### Please note the following detail:
 - Need install repo for php 7.1
