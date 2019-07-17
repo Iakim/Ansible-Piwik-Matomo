@@ -44,14 +44,14 @@
 
   - name: Downloading Matomo
     get_url:
-      url: https://builds.piwik.org/piwik.zip
+      url: https://builds.matomo.org/matomo.zip
       dest: /opt
 
   - name: Unlinking file
-    shell: unzip /opt/piwik.zip -d /var/www/html
+    shell: unzip /opt/matomo.zip -d /var/www/html
 
   - name: Granting permission to Apache
-    shell: chown -R apache:apache /var/www/html/piwik
+    shell: chown -R apache:apache /var/www/html/matomo
 
   - name: Configuring php.ini
     lineinfile:
@@ -62,13 +62,13 @@
   - name: Adding GeoIP (Php)
     get_url:
       url: http://geolite.maxmind.com/download/geoip/database/GeoLiteCity.dat.gz
-      dest: /var/www/html/piwik/misc
+      dest: /var/www/html/matomo/misc
 
   - name: Unzipping .dat file
-    shell: gzip -d /var/www/html/piwik/misc/GeoLiteCity.dat.gz
+    shell: gzip -d /var/www/html/matomo/misc/GeoLiteCity.dat.gz
 
   - name: Rename .dat file
-    shell: mv /var/www/html/piwik/misc/GeoLiteCity.dat /var/www/html/piwik/misc/GeoIPCity.dat
+    shell: mv /var/www/html/matomo/misc/GeoLiteCity.dat /var/www/html/piwik/misc/GeoIPCity.dat
 
   - name: Enabling the Apache service
     service: name=httpd state=started enabled=yes
